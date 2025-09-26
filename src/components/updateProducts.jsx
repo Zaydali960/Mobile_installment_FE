@@ -181,6 +181,8 @@ const UpdateProducts = () => {
     onClick={() =>
       setFormData((prev) => ({
         ...prev,
+
+        
         productType: "mobile",
         deviceType:''
          // clear productType when selecting mobile
@@ -196,9 +198,9 @@ const UpdateProducts = () => {
     onClick={() =>
       setFormData((prev) => ({
         ...prev,
-        deviceType: "others",
-        productType: '',
-        mobileIMEI1: "", // clear IMEIs when selecting others
+       deviceType: "others",
+        productType: "", // allow user to enter
+        mobileIMEI1: "", // clear IMEIs
         mobileIMEI2: "",
       }))
     }

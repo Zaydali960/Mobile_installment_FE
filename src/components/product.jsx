@@ -157,11 +157,11 @@ const notifyProductCreation = () => {
 
   <button
     type="button"
-    className={`btn ${formData.deviceType === "others" ? "btn-primary" : "btn-outline-primary"}`}
+    className={`btn ${formData.productType === "others" ? "btn-primary" : "btn-outline-primary"}`}
     onClick={() =>
       setFormData((prev) => ({
         ...prev,
-        deviceType: "others",
+        productType: "others",
         mobileIMEI1: "", // clear IMEIs when selecting others
         mobileIMEI2: "",
       }))
@@ -196,7 +196,7 @@ const notifyProductCreation = () => {
 )}
 
 {/* Show Product Type input if Others is selected */}
-{formData.deviceType === "others" && (
+{formData.productType === "others" && (
   <input
     type="text"
     name="productType"
