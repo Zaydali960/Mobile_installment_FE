@@ -19,6 +19,7 @@ const UpdateTransaction = () => {
   const [ProductName, setProductName] = useState(null);
   const [DeviceCash, setDeviceCash] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [advanceInstalment, setAdvanceInstalment] = useState(null);
 
   // User Info
   const [userInfo, setUserInfo] = useState({
@@ -46,6 +47,7 @@ const UpdateTransaction = () => {
       try {
         setLoading(true);
         const txn = await getTransactionById(id);
+        setAdvanceInstalment(txn.advanceInstalment)
         console.log("Transaction fetched:", txn);
 
         if (txn) {
@@ -86,8 +88,9 @@ const UpdateTransaction = () => {
   }, [id]);
 
   // Create instalments dynamically
-  const createInstalment = (value, insDuration) => {
-    let newCost = Number(value) / insDuration;
+ const createInstalment = (value, insDuration) => {
+    let subCost = Number(value)- advanceInstalment
+    let newCost = subCost / insDuration;
     let arr = [];
     for (let index = 0; index < insDuration; index++) {
       arr.push(newCost);
@@ -152,6 +155,11 @@ const UpdateTransaction = () => {
       }));
     }
   };
+  useEffect(() => {
+  if (mobileCost > 0 && advanceInstalment !== null) {
+    createInstalment(mobileCost, instalmentDuration);
+  }
+}, [advanceInstalment, mobileCost, instalmentDuration]);
 
   const handleGranterChange = (e) => {
     const { name, value, files } = e.target;
@@ -175,6 +183,7 @@ const UpdateTransaction = () => {
       granterAddress: granterInfo.address,
       granterImage: granterInfo.image,
       productType: ProductType,
+      advanceInstalment: advanceInstalment,
       transactionType: paymentMethod,
       installments: paymentMethod === "instalment" ? instalments : [],
       cashPrice: DeviceCash,
@@ -280,7 +289,7 @@ const UpdateTransaction = () => {
           <button 
             disabled={mobileCost <= 0 || loading} 
             onClick={() => setPaymentMethod("instalment")} 
-            className={`btn ${paymentMethod === "instalment" ? "btn-primary" : "btn-outline-primary"} mx-2`}
+            className={`btn ${paymentMethod === "instalments" ? "btn-primary" : "btn-outline-primary"} mx-2`}
           >
             Instalment
           </button>
@@ -292,6 +301,19 @@ const UpdateTransaction = () => {
             Cash
           </button>
         </div>
+        <input
+  onChange={({ target: { value } }) => {
+    setAdvanceInstalment(Number(value));
+    
+    if (mobileCost > 0) {
+      createInstalment(mobileCost, instalmentDuration);
+    }
+  }}
+  value={advanceInstalment || ""}
+  type="number"
+  placeholder="Advance Inputs"
+  className="my-2 form-control"
+/>
 
         {(paymentMethod === "instalments" && mobileCost > 0) &&
           <>

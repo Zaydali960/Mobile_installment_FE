@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import AppContext from "./context/appContext";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -14,6 +14,8 @@ const Transaction = () => {
   const [ProductType, setProductType] = useState(null);
   const [ProductName, setProductName] = useState(null);
   const [DeviceCash, setDeviceCash] = useState(null);
+  const [advanceInstalment, setAdvanceInstalment] = useState(null);
+
 
   const [loading, setLoading] = useState(false);
 
@@ -38,7 +40,8 @@ const Transaction = () => {
   const instalmentArray = Array(12).fill();
 
   const createInstalment = (value, insDuration) => {
-    let newCost = Number(value) / insDuration;
+    let subCost = Number(value)- advanceInstalment
+    let newCost = subCost / insDuration;
     let arr = [];
     for (let index = 0; index < insDuration; index++) {
       arr.push(newCost);
@@ -65,6 +68,12 @@ const handleSearch = (query) => {
   // Show only first 3 matches
   setFilteredProducts(filtered.slice(0, 3));
 };
+useEffect(() => {
+  if (mobileCost > 0 && advanceInstalment !== null) {
+    createInstalment(mobileCost, instalmentDuration);
+  }
+}, [advanceInstalment, mobileCost, instalmentDuration]);
+
 
 
 //   const handleSearch = (query) => {
@@ -158,7 +167,8 @@ const handleSearch = (query) => {
       granterImage: granterInfo.image,
       productType: ProductType,
       transactionType: paymentMethod,
-      installments: paymentMethod === "instalment" ? instalments : [],
+      advanceInstalment: advanceInstalment,
+      installments: paymentMethod === "instalments" ? instalments : [],
       cashPrice: DeviceCash,
       installmentPrice: mobileCost,
       date: new Date()
@@ -262,7 +272,24 @@ const handleSearch = (query) => {
             Cash
           </button>
         </div>
+        {(paymentMethod === "instalments" && mobileCost > 0) &&
+        <>
+<h3 className='py-4'>Advance Instalments</h3>
 
+<input
+  onChange={({ target: { value } }) => {
+    setAdvanceInstalment(Number(value));
+    if (mobileCost > 0) {
+      createInstalment(mobileCost, instalmentDuration);
+    }
+  }}
+  type="number"
+  placeholder="Advance Inputs"
+  className="my-2 form-control"
+/>
+
+        </>
+}
         {(paymentMethod === "instalments" && mobileCost > 0) &&
           <>
             <h3 className='py-4'>Instalments Duration</h3>

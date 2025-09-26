@@ -23,6 +23,9 @@ function Pdf() {
     fetchFunc()
   }, [id])
   
+  const formatCurrency = (value) => {
+  return value ? value.toLocaleString("en") : "0";
+};
 
   return (
     <>
@@ -53,27 +56,35 @@ function Pdf() {
       >
         {/* Title */}
         <div className="text-center mb-4">
-          <h1 className="fw-bold h3 py-3">Kamran Mobile Zone & Electronics</h1>
+          <h1 className="fw-bold h3 pt-3">Kamran Mobile Zone & Electronics</h1>
+          <p>Shop # 89, 1st Floor, Lane # 3, Imperial Market,<br/>Liaquat Road, Raja bazar, Rawalpindi</p>
+          <p className="pt-1">Ph: 051-8482308, 0335-9532000, 0334-4009340</p>
           {/* <p className="opacity-75">{pdfData?._id}</p> */}
         </div>
+        <div className="d-flex justify-content-end px-2">
+    <p className="mb-1">
+      <strong>Date:</strong>{" "}
+      {pdfData?.date ? new Date(pdfData.date).toLocaleDateString() : ""}
+    </p>
+  </div>
 
         {/* User & Granter Info */}
         <div className="row mb-4 g-3">
-          <div className="col-12 col-md-6 border p-3 rounded-3">
+          <div className="col-12 col-md-6 border p-3 rounded-3" style={pdfData.transactionType === "cash" ? { width: "100%" } : {}}>
             <h5 className="fw-bold">User Details</h5>
             <p><strong>Name:</strong> {pdfData?.fullName}</p>
             <p><strong>Phone:</strong> {pdfData?.contactNumber}</p>
-            <p><strong>CNIC:</strong> {pdfData?.cnicNumber}</p>
+            {pdfData.transactionType === "instalments" &&<p><strong>CNIC:</strong> {pdfData?.cnicNumber}</p>}
             <p><strong>Address:</strong> {pdfData?.address}</p>
           </div>
 
-          <div className="col-12 col-md-6 border p-3 rounded-3">
-            <h5 className="fw-bold">Granter Details</h5>
+          {pdfData.transactionType === "instalments" && (<div className="col-12 col-md-6 border p-3 rounded-3">
+            <h5 className="fw-bold">Guarantor Details</h5>
             <p><strong>Name:</strong> {pdfData?.granterFullName}</p>
             <p><strong>Phone:</strong> {pdfData?.granterContactNumber}</p>
-            <p><strong>CNIC:</strong> {pdfData?.granterCnicNumber}</p>
+            {pdfData.transactionType === "instalments" && <p><strong>CNIC:</strong> {pdfData?.granterCnicNumber}</p>}
             <p><strong>Address:</strong> {pdfData?.granterAddress}</p>
-          </div>
+          </div>)}
         </div>
          <div className="py-5">
   <table className="table table-bordered">
@@ -94,7 +105,7 @@ function Pdf() {
           <td>
             {pdfData.transactionType === "cash"
               ? `${pdfData.cashPrice} PKR`
-              : `${pdfData.installmentPrice} PKR (Total)`}
+              : `${pdfData.installmentPrice} PKR `}
           </td>
         </tr>
       ) : (
@@ -108,25 +119,45 @@ function Pdf() {
   </table>
 </div>
 
-        <div className="row">
+        {pdfData.transactionType === "instalments" &&<div className="row">
                         <div className="col-6"></div>
                         <div className="col-6 p-1">
                             <div className='h-100 p-3 border border-dark rounded-4 flex-column d-flex justify-content-center'>
-                                <div className="d-flex justify-content-between">
-                                    <span className=" fw-bold">Sub Total</span>
-                                    <span className=" opacity-75">{pdfData?.cashPrice.toLocaleString('en')} PKR</span>
-                                </div>
-                                <div className="d-flex justify-content-between">
-                                    <span className=" fw-bold">Tax</span>
-                                    <span className=" opacity-75">Included</span>
-                                </div>
                                 <div className="d-flex justify-content-between align-items-center">
                                     <span className=" fw-bold">Total</span>
-                                    <span className=" fw-bold h3">{pdfData?.cashPrice.toLocaleString('en')} PKR</span>
+                                    <span className=" ">{pdfData?.cashPrice ?pdfData.cashPrice.toLocaleString("en") : pdfData?.installmentPrice?.toLocaleString("en")} PKR</span>
+                                </div>
+                               { pdfData.transactionType === "instalments" && (<div className="d-flex justify-content-between">
+                                    <span className=" fw-bold">Remaining Instalment</span>
+                                    <span className=" opacity-75">{(pdfData?.installmentPrice - pdfData?.advanceInstalment).toLocaleString("en")} PKR</span>
+                                </div>)}
+                                <div className="d-flex justify-content-between">
+                                    <span className=" fw-bold">{pdfData?.cashPrice ? "Sub Total" : "Instalment Advance"}</span>
+                                    <span className=" opacity-75">{pdfData?.cashPrice ?pdfData.cashPrice.toLocaleString("en") : pdfData?.advanceInstalment?.toLocaleString("en")} PKR</span>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>}
+        {pdfData.transactionType === "cash" &&<div className="row">
+                        <div className="col-6"></div>
+                        <div className="col-6 p-1">
+                            <div className='h-100 p-3 border border-dark rounded-4 flex-column d-flex justify-content-center'>
+                              <div className="d-flex justify-content-between">
+                                    <span className=" fw-bold">{pdfData?.cashPrice ? "Sub Total" : "Instalment Advance"}</span>
+                                    <span className=" opacity-75">{pdfData?.cashPrice ?pdfData.cashPrice.toLocaleString("en") : pdfData?.advanceInstalment?.toLocaleString("en")} PKR</span>
+                                </div>
+                                <div className="d-flex justify-content-between align-items-center">
+                                    <span className=" fw-bold">Total</span>
+                                    <span className=" fw-bold h3">{pdfData?.cashPrice ?pdfData.cashPrice.toLocaleString("en") : pdfData?.installmentPrice?.toLocaleString("en")} PKR</span>
+                                </div>
+                               { pdfData.transactionType === "instalments" && (<div className="d-flex justify-content-between">
+                                    <span className=" fw-bold">Remaining Instalment</span>
+                                    <span className=" opacity-75">{(pdfData?.installmentPrice - pdfData?.advanceInstalment).toLocaleString("en")} PKR</span>
+                                </div>)}
+                                
+                            </div>
+                        </div>
+                    </div>}
 
         {/* Notes */}
         <div>
@@ -135,10 +166,10 @@ function Pdf() {
           <p className="opacity-75">
             Any form of convenient payment method is acceptable
           </p>
-          <p className="mt-3">
+          {/* <p className="mt-3">
             <strong>Date:</strong>{" "}
             {new Date(pdfData?.date).toLocaleDateString()}
-          </p>
+          </p> */}
         </div>
       </div>
     </>
