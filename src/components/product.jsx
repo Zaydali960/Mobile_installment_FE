@@ -143,10 +143,11 @@ const notifyProductCreation = () => {
 <div className="mb-3 d-flex gap-2">
   <button
     type="button"
-    className={`btn ${formData.productType === "mobile" ? "btn-primary" : "btn-outline-primary"}`}
+    className={`btn ${formData.deviceType === "mobile" ? "btn-primary" : "btn-outline-primary"}`}
     onClick={() =>
       setFormData((prev) => ({
         ...prev,
+        deviceType: "mobile",
         productType: "mobile",
          // clear productType when selecting mobile
       }))
@@ -157,11 +158,12 @@ const notifyProductCreation = () => {
 
   <button
     type="button"
-    className={`btn ${formData.productType === "others" ? "btn-primary" : "btn-outline-primary"}`}
+    className={`btn ${formData.deviceType === "others" ? "btn-primary" : "btn-outline-primary"}`}
     onClick={() =>
       setFormData((prev) => ({
         ...prev,
-        productType: "others",
+        // productType: "",
+        deviceType: "others",
         mobileIMEI1: "", // clear IMEIs when selecting others
         mobileIMEI2: "",
       }))
@@ -172,7 +174,7 @@ const notifyProductCreation = () => {
 </div>
 
 {/* Show IMEI inputs if Mobile is selected */}
-{formData.productType === "mobile" && (
+{formData.deviceType === "mobile" && (
   <>
     <input
       type="text"
@@ -196,7 +198,7 @@ const notifyProductCreation = () => {
 )}
 
 {/* Show Product Type input if Others is selected */}
-{formData.productType === "others" && (
+{formData.deviceType === "others" && (
   <input
     type="text"
     name="productType"

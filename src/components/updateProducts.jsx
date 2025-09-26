@@ -200,8 +200,7 @@ const UpdateProducts = () => {
         ...prev,
        deviceType: "others",
         productType: "", // allow user to enter
-        mobileIMEI1: "", // clear IMEIs
-        mobileIMEI2: "",
+        
       }))
     }
   >
@@ -245,6 +244,15 @@ const UpdateProducts = () => {
     required
   />
 )}
+<input
+  type="number"
+  name="wholesalePrice"
+  placeholder="Wholesale Price"
+  className="my-2 form-control"
+  value={formData.wholesalePrice}
+  onChange={handleChange}
+  required
+/>
 
 
         <div className="d-flex justify-content-end mt-4">
