@@ -57,8 +57,8 @@ function Pdf() {
         {/* Title */}
         <div className="text-center mb-4">
           <h1 className="fw-bold h3 pt-3">Kamran Mobile Zone & Electronics</h1>
-          <p>Shop # 89, 1st Floor, Lane # 3, Imperial Market,<br/>Liaquat Road, Raja bazar, Rawalpindi</p>
-          <p className="pt-1">Ph: 051-8482308, 0335-9532000, 0334-4009340</p>
+          <p>شاپ نمبر 39، فرسٹ فلور المسلم پلازہ,<br/>ترانفارمر چوک، صادق آباد، راولپنڈی</p>
+          <p className="pt-1">Ph: 0312-9071455, 0330-6033470</p>
           {/* <p className="opacity-75">{pdfData?._id}</p> */}
         </div>
         <div className="d-flex justify-content-end px-2">
@@ -86,7 +86,7 @@ function Pdf() {
             <p><strong>Address:</strong> {pdfData?.granterAddress}</p>
           </div>)}
         </div>
-         <div className="py-5">
+         <div className="pt-5 pb-2">
   <table className="table table-bordered">
     <thead className="table-dark">
       <tr>
@@ -118,6 +118,34 @@ function Pdf() {
     </tbody>
   </table>
 </div>
+         {pdfData?.productType?.productType == "mobile" && <div className="py-3">
+  <table className="table table-bordered">
+    <thead className="table-dark">
+      <tr>
+        <th scope="col">IMEI Number 1</th>
+        {/* <th scope="col">Wholesaler</th> */}
+        <th scope="col">IMEI Number 2</th>
+        {/* <th scope="col">Amount</th> */}
+      </tr>
+    </thead>
+    <tbody>
+     
+        <tr>
+          <td>{pdfData.productType.mobileIMEI1}</td>
+          {/* <td>{pdfData.productType.wholesalerName}</td> */}
+          <td>{pdfData.productType.mobileIMEI2}</td>
+          {/* <td>
+            {pdfData.transactionType === "cash"
+              ? `${pdfData.cashPrice} PKR`
+              : `${pdfData.installmentPrice} PKR `}
+          </td> */}
+        </tr>
+      
+        
+      
+    </tbody>
+  </table>
+</div>}
 
         {pdfData.transactionType === "instalments" &&<div className="row">
                         <div className="col-6"></div>
@@ -162,14 +190,16 @@ function Pdf() {
         {/* Notes */}
         <div>
           <h5 className="fw-bold mb-2">Notes</h5>
-          <p className="fw-bold">Payment Method</p>
           <p className="opacity-75">
-            Any form of convenient payment method is acceptable
+            1. Kamran Mobile Zone & Electronics is not responsible for any warranty.
           </p>
-          {/* <p className="mt-3">
-            <strong>Date:</strong>{" "}
-            {new Date(pdfData?.date).toLocaleDateString()}
-          </p> */}
+          <p className="opacity-75">
+            2. For warranty claim please contact to the related claim.
+          </p>
+          <p className="opacity-75">
+            3. Goods once sold can not be taken.
+          </p>
+          
         </div>
       </div>
     </>
